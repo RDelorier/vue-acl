@@ -12,15 +12,29 @@
 
         <div class="col-xs-3">
             <ul>
-                <li v-show="can('view-dashboard')">Dashboard</li>
-                <li v-show="can('view-users')">Users</li>
-                <li v-show="can('view-parts')">Parts</li>
-                <li v-show="can('view-vehicles')">Vehicles</li>
-                <li v-show="can('view-shops')">Shops</li>
+                <li v-show="can('view-dashboard')">
+                    <a v-link=" {path:'dashboard'}">Dashboard</a>
+                </li>
+                <li v-show="can('view-users')">
+                    <a v-link=" {path:'users'}">Users</a>
+                </li>
+                <li v-show="can('view-parts')">
+                    <a v-link=" {path:'parts'}">Parts</a>
+                </li>
+                <li v-show="can('view-vehicles')">
+                    <a v-link=" {path:'vehicles'}">Vehicles</a>
+                </li>
+                <li v-show="can('view-shops')">
+                    <a v-link=" {path:'shops'}">Shops</a>
+                </li>
             </ul>
         </div>
 
         <div class="col-xs-9">
+            <router-view></router-view>
+        </div>
+
+        <div class="col-xs-12">
             <p>Current permission</p>
             <ul>
                 <li v-for="p in permissions">{{p}}</li>
