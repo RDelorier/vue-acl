@@ -25333,65 +25333,89 @@ module.exports = Watcher
 },{"./batcher":39,"./config":45,"./observer/dep":82,"./parsers/expression":85,"./util":96,"_process":1}],101:[function(require,module,exports){
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
 var Auth = (function () {
-    function Auth(options) {
+    function Auth() {
         _classCallCheck(this, Auth);
-
-        this.options = options;
-        this._permissions = options.permissions || [];
     }
 
-    /**
-     * Determines if permission is in this.permission
-     *
-     * @param permission array[string]|string permissions to check for
-     * @param strict are all permissions required
-     * @returns {boolean}
-     */
-
     _createClass(Auth, [{
-        key: "can",
+        key: 'can',
+
+        /**
+         * Determines if permission is in this.permission
+         *
+         * @param permission array[string]|string permissions to check for
+         * @param strict are all permissions required
+         * @returns {boolean}
+         */
         value: function can(permission, strict) {
 
             if (!Array.isArray(permission)) {
                 return this.permissions.indexOf(permission) !== -1;
             }
 
-            return _lodash2["default"].intersection(this.permissions, permission).length >= (strict ? permission.length : 1);
+            return _lodash2['default'].intersection(this.permissions, permission).length >= (strict ? permission.length : 1);
         }
     }, {
-        key: "permissions",
+        key: 'permissions',
         set: function set(permissions) {
-            this._permissions = permissions;
+            this._permissions = permissions || [];
         },
         get: function get() {
             return this._permissions;
+        }
+    }, {
+        key: 'router',
+        set: function set(router) {
+            var _this = this;
+
+            if (typeof router.beforeEach !== 'function') {
+                return;
+            }
+
+            router.beforeEach(function (_ref) {
+                var to = _ref.to;
+                var next = _ref.next;
+
+                if (to.permissions && !_this.can(to.permissions)) {
+                    return false;
+                }
+                next();
+            });
         }
     }]);
 
     return Auth;
 })();
 
-Auth.install = function (Vue, options) {
-    Vue.prototype.$auth = new Auth(options);
+var auth = new Auth();
+
+Auth.install = function (Vue, _ref2) {
+    var permissions = _ref2.permissions;
+    var router = _ref2.router;
+
+    auth.permissions = permissions;
+    auth.router = router;
+
+    Vue.prototype.$auth = auth;
 };
 
-exports["default"] = Auth;
-module.exports = exports["default"];
+exports['default'] = Auth;
+module.exports = exports['default'];
 
 },{"lodash":2}],102:[function(require,module,exports){
 "use strict";
@@ -25493,8 +25517,6 @@ var VueRouter = require('vue-router');
 var Auth = require('./auth');
 
 Vue.config.debug = true;
-Vue.use(VueRouter);
-Vue.use(Auth, { permissions: ['view-dashboard', 'view-users', 'view-parts', 'view-vehicles', 'view-shops'] });
 
 var app = Vue.extend({
     data: function data() {
@@ -25508,13 +25530,16 @@ var app = Vue.extend({
     }
 });
 
-var router = new VueRouter();
+Vue.use(VueRouter);
 
+var router = new VueRouter();
 router.map({
     '/dashboard': {
-        component: require('./components/dashboard')
+        component: require('./components/dashboard'),
+        permissions: 'view-dashboard'
     }, '/users': {
-        component: require('./components/users')
+        component: require('./components/users'),
+        permissions: ['view-users']
     }, '/parts': {
         component: require('./components/parts')
     }, '/vehicles': {
@@ -25523,6 +25548,8 @@ router.map({
         component: require('./components/shops')
     }
 });
+
+Vue.use(Auth, { permissions: ['view-dashboard', 'view-users', 'view-parts', 'view-vehicles', 'view-shops'], router: router });
 
 router.start(app, '#app');
 

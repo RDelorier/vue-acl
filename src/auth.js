@@ -4,11 +4,6 @@ import _ from 'lodash';
 
 class Auth {
 
-    constructor(options){
-        this.options = options;
-        this._permissions = options.permissions || [];
-    }
-
     /**
      * Determines if permission is in this.permission
      *
@@ -29,18 +24,33 @@ class Auth {
     }
 
     set permissions(permissions){
-        this._permissions = permissions;
+        this._permissions = permissions || [];
     }
 
     get permissions(){
         return this._permissions;
     }
+    set router(router){
+        if(typeof router.beforeEach !== 'function'){
+            return;
+        }
 
-
+        router.beforeEach(({to, next}) => {
+            if(to.permissions && !this.can(to.permissions)){
+                return false;
+            }
+            next();
+        })
+    }
 }
 
-Auth.install = function(Vue, options){
-    Vue.prototype.$auth = new Auth(options)
+let auth = new Auth();
+
+Auth.install = function(Vue, {permissions, router}){
+    auth.permissions = permissions;
+    auth.router = router;
+
+    Vue.prototype.$auth = auth;
 };
 
 export default Auth;

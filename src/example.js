@@ -3,14 +3,6 @@ var VueRouter = require('vue-router');
 var Auth = require('./auth');
 
 Vue.config.debug = true;
-Vue.use(VueRouter);
-Vue.use(Auth, { permissions: [
-    'view-dashboard',
-    'view-users',
-    'view-parts',
-    'view-vehicles',
-    'view-shops'
-]});
 
 var app = Vue.extend({
     data(){
@@ -24,13 +16,16 @@ var app = Vue.extend({
     }
 });
 
-var router = new VueRouter();
+Vue.use(VueRouter);
 
+var router = new VueRouter();
 router.map({
     '/dashboard' : {
-        component: require('./components/dashboard')
+        component: require('./components/dashboard'),
+        permissions:'view-dashboard'
     }, '/users'  : {
-        component: require('./components/users')
+        component: require('./components/users'),
+        permissions:['view-users']
     }, '/parts'  : {
         component: require('./components/parts')
     }, '/vehicles': {
@@ -39,6 +34,16 @@ router.map({
         component: require('./components/shops')
     },
 });
+
+Vue.use(Auth, { permissions: [
+    'view-dashboard',
+    'view-users',
+    'view-parts',
+    'view-vehicles',
+    'view-shops'
+], router});
+
+
 
 
 router.start(app, '#app');
