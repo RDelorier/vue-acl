@@ -1,6 +1,6 @@
 <div>
     <ul>
-        <li v-show="$parent.can('edit-users')">Edit</li>
-        <li v-show="$parent.can('delete-users')">Delete</li>
+        <li v-show="$auth.can('edit-users')">Edit</li>
+        <li v-show="$auth.can('delete-users')">Delete</li>
     </ul>
 </div>

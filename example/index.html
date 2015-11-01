@@ -11,20 +11,21 @@
     <div class="container">
 
         <div class="col-xs-3">
+            <h4>{{$route.path}}</h4>
             <ul>
-                <li v-show="can('view-dashboard')">
+                <li v-show="$auth.can('view-dashboard')">
                     <a v-link=" {path:'dashboard'}">Dashboard</a>
                 </li>
-                <li v-show="can('view-users')">
+                <li v-show="$auth.can('view-users')">
                     <a v-link=" {path:'users'}">Users</a>
                 </li>
-                <li v-show="can('view-parts')">
+                <li v-show="$auth.can('view-parts')">
                     <a v-link=" {path:'parts'}">Parts</a>
                 </li>
-                <li v-show="can('view-vehicles')">
+                <li v-show="$auth.can('view-vehicles')">
                     <a v-link=" {path:'vehicles'}">Vehicles</a>
                 </li>
-                <li v-show="can('view-shops')">
+                <li v-show="$auth.can('view-shops')">
                     <a v-link=" {path:'shops'}">Shops</a>
                 </li>
             </ul>

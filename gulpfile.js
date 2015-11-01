@@ -4,6 +4,6 @@ var Vue = require('vue');
 var elixir = require('laravel-elixir');
 
 elixir(function(mix){
-    mix.browserify('index.js', 'public/js/app.js','src');
+    mix.browserify('example.js', 'example/js/app.js','src');
 });
 

@@ -1,24 +1,21 @@
 var Vue       = require('vue');
 var VueRouter = require('vue-router');
+var Auth = require('./auth');
 
 Vue.config.debug = true;
 Vue.use(VueRouter);
+Vue.use(Auth, { permissions: [
+    'view-dashboard',
+    'view-users',
+    'view-parts',
+    'view-vehicles',
+    'view-shops'
+]});
 
 var app = Vue.extend({
     data(){
         return {
-            permissions: [
-                'view-dashboard',
-                'view-users',
-                'view-parts',
-                'view-vehicles',
-                'view-shops'
-            ]
-        }
-    },
-    methods: {
-        can(permission){
-            return this.permissions.indexOf(permission) !== -1;
+            auth:this.$auth
         }
     },
 
@@ -42,5 +39,6 @@ router.map({
         component: require('./components/shops')
     },
 });
+
 
 router.start(app, '#app');

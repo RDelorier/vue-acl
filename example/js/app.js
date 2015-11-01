@@ -12978,22 +12978,48 @@ module.exports = Watcher
 },{"./batcher":38,"./config":44,"./observer/dep":81,"./parsers/expression":84,"./util":95,"_process":1}],100:[function(require,module,exports){
 "use strict";
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _vue = require('vue');
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _vue2 = _interopRequireDefault(_vue);
+var Auth = (function () {
+    function Auth(options) {
+        _classCallCheck(this, Auth);
 
-exports['default'] = {
-    template: '<h1>dashboard</h1>'
+        this.options = options;
+    }
+
+    _createClass(Auth, [{
+        key: "can",
+        value: function can(permission) {
+            return this.permissions.indexOf(permission) !== -1;
+        }
+    }, {
+        key: "permissions",
+        set: function set(permissions) {
+            this.options.permissions = permissions;
+        },
+        get: function get() {
+            return this.options.permissions;
+        }
+    }]);
+
+    return Auth;
+})();
+
+Auth.install = function (Vue, options) {
+    window.Vue = Vue;
+    Vue.prototype.$auth = new Auth(options);
 };
-module.exports = exports['default'];
 
-},{"vue":98}],101:[function(require,module,exports){
+exports["default"] = Auth;
+module.exports = exports["default"];
+
+},{}],101:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, '__esModule', {
@@ -13007,7 +13033,7 @@ var _vue = require('vue');
 var _vue2 = _interopRequireDefault(_vue);
 
 exports['default'] = {
-    template: '<h1>parts</h1>'
+    template: '<h1>dashboard</h1>'
 };
 module.exports = exports['default'];
 
@@ -13025,13 +13051,31 @@ var _vue = require('vue');
 var _vue2 = _interopRequireDefault(_vue);
 
 exports['default'] = {
-    template: '<h1>shops</h1>'
+    template: '<h1>parts</h1>'
 };
 module.exports = exports['default'];
 
 },{"vue":98}],103:[function(require,module,exports){
-module.exports = '<div>\n    <ul>\n        <li v-show="$parent.can(\'edit-users\')">Edit</li>\n        <li v-show="$parent.can(\'delete-users\')">Delete</li>\n    </ul>\n</div>';
-},{}],104:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _vue = require('vue');
+
+var _vue2 = _interopRequireDefault(_vue);
+
+exports['default'] = {
+    template: '<h1>shops</h1>'
+};
+module.exports = exports['default'];
+
+},{"vue":98}],104:[function(require,module,exports){
+module.exports = '<div>\n    <ul>\n        <li v-show="$auth.can(\'edit-users\')">Edit</li>\n        <li v-show="$auth.can(\'delete-users\')">Delete</li>\n    </ul>\n</div>';
+},{}],105:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, '__esModule', {
@@ -13049,7 +13093,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./users.html":103,"vue":98}],105:[function(require,module,exports){
+},{"./users.html":104,"vue":98}],106:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, '__esModule', {
@@ -13067,25 +13111,22 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"vue":98}],106:[function(require,module,exports){
+},{"vue":98}],107:[function(require,module,exports){
 'use strict';
 
 var Vue = require('vue');
 var VueRouter = require('vue-router');
+var Auth = require('./auth');
 
 Vue.config.debug = true;
 Vue.use(VueRouter);
+Vue.use(Auth, { permissions: ['view-dashboard', 'view-users', 'view-parts', 'view-vehicles', 'view-shops'] });
 
 var app = Vue.extend({
     data: function data() {
         return {
-            permissions: ['view-dashboard', 'view-users', 'view-parts', 'view-vehicles', 'view-shops']
+            auth: this.$auth
         };
-    },
-    methods: {
-        can: function can(permission) {
-            return this.permissions.indexOf(permission) !== -1;
-        }
     },
 
     ready: function ready() {
@@ -13111,4 +13152,4 @@ router.map({
 
 router.start(app, '#app');
 
-},{"./components/dashboard":100,"./components/parts":101,"./components/shops":102,"./components/users":104,"./components/vehicles":105,"vue":98,"vue-router":7}]},{},[106]);
+},{"./auth":100,"./components/dashboard":101,"./components/parts":102,"./components/shops":103,"./components/users":105,"./components/vehicles":106,"vue":98,"vue-router":7}]},{},[107]);

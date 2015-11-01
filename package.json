@@ -2,17 +2,17 @@
   "name": "vue-acl",
   "version": "1.0.0",
   "description": "Access control with vue js",
-  "main": "index.js",
+  "main": "auth.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Ricky Delorier",
   "license": "ISC",
   "devDependencies": {
-    "vue": "^1.0.4"
-  },
-  "dependencies": {
     "gulp": "^3.9.0",
     "laravel-elixir": "^3.4.2"
+  },
+  "dependencies": {
+    "vue": "^1.0.4"
   }
 }
