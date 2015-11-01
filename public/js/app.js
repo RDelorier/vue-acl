@@ -10194,7 +10194,15 @@ var Vue = require('vue');
 new Vue({
     el: '#app',
     data: {
-        message: 'Hello Vue.js!'
+        permissions: ['view-dashboard']
+    },
+    methods: {
+        can: function can(permission) {
+            return this.permissions.indexOf(permission) !== -1;
+        }
+    },
+    ready: function ready() {
+        window.app = this;
     }
 });
 

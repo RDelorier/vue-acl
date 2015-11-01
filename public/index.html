@@ -10,14 +10,20 @@
 
     <div class="container">
 
-        <h2>{{message}}</h2>
         <div class="col-xs-3">
             <ul>
-                <li>Dashboard</li>
-                <li>Users</li>
-                <li>Parts</li>
-                <li>Vehicles</li>
-                <li>Shops</li>
+                <li v-show="can('view-dashboard')">Dashboard</li>
+                <li v-show="can('view-users')">Users</li>
+                <li v-show="can('view-parts')">Parts</li>
+                <li v-show="can('view-vehicles')">Vehicles</li>
+                <li v-show="can('view-shops')">Shops</li>
+            </ul>
+        </div>
+
+        <div class="col-xs-9">
+            <p>Current permission</p>
+            <ul>
+                <li v-for="p in permissions">{{p}}</li>
             </ul>
         </div>
     </div>
